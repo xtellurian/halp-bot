@@ -1,4 +1,5 @@
 import { BotFrameworkAdapter, MemoryStorage, ConversationState } from 'botbuilder';
+import * as azure from 'botbuilder-azure'
 import * as restify from 'restify';
 
 // Create server
@@ -8,9 +9,9 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
 });
 
 // Create adapter
-const adapter = new BotFrameworkAdapter({ 
-    appId: process.env.MICROSOFT_APP_ID, 
-    appPassword: process.env.MICROSOFT_APP_PASSWORD 
+const adapter = new BotFrameworkAdapter({
+    appId: process.env.MICROSOFT_APP_ID,
+    appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
 
 // Define conversation state shape
@@ -18,14 +19,33 @@ interface EchoState {
     count: number;
 }
 
-// Add conversation state middleware
-const conversationState = new ConversationState<EchoState>(new MemoryStorage());
+var storage;
+
+// get the state manager table storage
+if (process.env.USE_TABLE_STORAGE) {
+    var tableName = process.env.STATE_TABLE_NAME
+    var storageAccountName = process.env.STORAGE_ACCOUNT_NAME;
+    var storageAccountKey = process.env.STORAGE_ACCOUNT_KEY;
+
+    //var azureTableClient = new azure.AzureTableClient(tableName, 'UseDevelopmentStorage=true');
+    var azureTableClient = new azure.AzureTableClient(tableName, storageAccountName, storageAccountKey);
+    storage = new azure.AzureBotStorage({ gzipData: false }, azureTableClient);
+    console.log(`Using Azure Table Storage [${storageAccountName}/${tableName}]`);
+} else{
+    console.log('Using Memory Storage');
+    storage = new MemoryStorage();
+}
+
+// Add conversation state  middleware
+const conversationState = new ConversationState<EchoState>(storage);
 adapter.use(conversationState);
+
+
 
 // Listen for incoming requests 
 server.post('/api/messages', (req, res) => {
     // Route received request to adapter for processing
-    try{
+    try {
 
         adapter.processActivity(req, res, async (context) => {
             console.log(req.body)
@@ -39,7 +59,7 @@ server.post('/api/messages', (req, res) => {
                 await context.sendActivity(`[${context.activity.type} event detected]`);
             }
         });
-    } catch(err) {
+    } catch (err) {
         console.log(err)
     }
 });
