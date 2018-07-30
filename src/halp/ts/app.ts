@@ -41,6 +41,7 @@ const conversationState = new ConversationState<EchoState>(storage);
 adapter.use(conversationState);
 
 server.get('/status', (req,res) => {
+    console.log('Yes, this service is alive');
     res.send({alive: true});
 })
 
