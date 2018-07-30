@@ -40,6 +40,9 @@ if (process.env.USE_TABLE_STORAGE) {
 const conversationState = new ConversationState<EchoState>(storage);
 adapter.use(conversationState);
 
+server.get('/status', (req,res) => {
+    res.send(JSON.stringify({alive: true}));
+})
 
 
 // Listen for incoming requests 
