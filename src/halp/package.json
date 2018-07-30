@@ -1,0 +1,17 @@
+{
+    "name": "halp",
+    "scripts": {
+        "build": "tsc --project ./ts/tsconfig.json",
+        "watch": "tsc -w --project ./ts/tsconfig.json",
+        "outputwatch": "nodemon ./js/app.js --delay .5"
+    },
+    "dependencies": {
+        "botbuilder": "^4.0.0-preview1.1",
+        "dotenv": "^2.0.0",
+        "restify": "^4.3.0"
+    },
+    "devDependencies": {
+        "@types/node": "^6.0.52",
+        "@types/restify": "^2.0.35"
+    }
+}
