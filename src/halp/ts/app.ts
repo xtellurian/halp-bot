@@ -41,7 +41,7 @@ const conversationState = new ConversationState<EchoState>(storage);
 adapter.use(conversationState);
 
 server.get('/status', (req,res) => {
-    res.send(JSON.stringify({alive: true}));
+    res.send({alive: true});
 })
 
 
