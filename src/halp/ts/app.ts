@@ -50,9 +50,8 @@ server.get('/status', (req,res) => {
 server.post('/api/messages', (req, res) => {
     // Route received request to adapter for processing
     try {
-
+        console.log('recieved a message');
         adapter.processActivity(req, res, async (context) => {
-            console.log(req.body)
             if (context.activity.type === 'message') {
                 console.log('activity type is message');
                 const state = conversationState.get(context);
