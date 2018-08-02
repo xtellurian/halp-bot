@@ -31,6 +31,7 @@ if (process.env.USE_TABLE_STORAGE) {
     var azureTableClient = new azure.AzureTableClient(tableName, storageAccountName, storageAccountKey);
     storage = new azure.AzureBotStorage({ gzipData: false }, azureTableClient);
     console.log(`Using Azure Table Storage [${storageAccountName}/${tableName}]`);
+    
 } else{
     console.log('Using Memory Storage');
     storage = new MemoryStorage();
@@ -50,10 +51,10 @@ server.get('/status', (req,res) => {
 server.post('/api/messages', (req, res) => {
     // Route received request to adapter for processing
     try {
-        console.log('recieved a message');
+        console.log('POST /api/messages');
         adapter.processActivity(req, res, async (context) => {
             if (context.activity.type === 'message') {
-                console.log('activity type is message');
+                console.log('activity type == message');
                 const state = conversationState.get(context);
                 const count = state.count === undefined ? state.count = 0 : ++state.count;
                 await context.sendActivity(`${count}: You said "${context.activity.text}"`);
