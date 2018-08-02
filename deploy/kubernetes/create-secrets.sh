@@ -1,0 +1,2 @@
+kubectl create secret generic microsoft-app --from-file=./secrets/app-id --from-file=./secrets/app-password
+kubectl create secret generic azure-table --from-file=./secrets/table-account-name --from-file=./secrets/table-key

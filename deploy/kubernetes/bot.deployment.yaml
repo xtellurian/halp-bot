@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: halp-bot-deployment
+  labels:
+    app: halp-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: halp-bot
+  template:
+    metadata:
+      labels:
+        app: halp-bot
+    spec:
+      containers:
+      - name: halp-bot
+        image: xtellurian/halp-bot:71
+        ports:
+        - containerPort: 80
+        env:
+        - name: PORT
+          value: "80"
+        - name: MICROSOFT_APP_ID
+          valueFrom:
+            secretKeyRef:
+              name: microsoft-bot-app
+              key: app-id
+        - name: MICROSOFT_APP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: microsoft-bot-app
+              key: app-password
+        - name: USE_TABLE_STORAGE
+          value: 
+        - name: STATE_TABLE_NAME
+          value: botstate
+        - name: STORAGE_ACCOUNT_NAME
+          valueFrom:
+            secretKeyRef:
+              name: azure-table
+              key: table-account-name
+        - name: STORAGE_ACCOUNT_KEY
+          valueFrom:
+            secretKeyRef:
+              name: azure-table
+              key: table-key
