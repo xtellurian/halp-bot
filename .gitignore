@@ -1,3 +1,5 @@
 src/halp/node_modules
 
 src/halp/js/
+
+deploy/kubernetes/secrets/
